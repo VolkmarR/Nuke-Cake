@@ -1,40 +1,72 @@
-var target = Argument("target", "Test");
+var target = Argument("target", "Compile");
 var configuration = Argument("configuration", "Release");
+
+var solution = "./NukeCakeTests.sln";
+var srcDirectory = "./src";
+var publishPath = "./publish";
+var artefactsPath = "./artefacts";
 
 //////////////////////////////////////////////////////////////////////
 // TASKS
 //////////////////////////////////////////////////////////////////////
 
 Task("Clean")
-    .WithCriteria(c => HasArgument("rebuild"))
     .Does(() =>
-{
-    CleanDirectory($"./src/Example/bin/{configuration}");
-});
-
-Task("Build")
-    .IsDependentOn("Clean")
-    .Does(() =>
-{
-    DotNetBuild("./src/Example.slnx", new DotNetBuildSettings
     {
-        Configuration = configuration,
+        CleanDirectories($"{srcDirectory}/**/obj");
+        CleanDirectories($"{srcDirectory}/**/bin");
+        CleanDirectory(publishPath);
+        CleanDirectory(artefactsPath);
     });
-});
+
+Task("Restore")
+    .Does(() =>
+    {
+        DotNetRestore(solution, new DotNetRestoreSettings
+        {
+            Verbosity = DotNetVerbosity.Quiet,
+        });
+    });
+
+Task("Compile")
+    .IsDependentOn("Restore")
+    .Does(() =>
+    {
+        DotNetBuild(solution, new DotNetBuildSettings
+        {
+            Configuration = configuration,
+            NoRestore = true,
+            Verbosity = DotNetVerbosity.Quiet,
+        });
+    });
 
 Task("Test")
-    .IsDependentOn("Build")
+    .IsDependentOn("Compile")
     .Does(() =>
-{
-    DotNetTest("./src/Example.slnx", new DotNetTestSettings
     {
-        Configuration = configuration,
-        NoBuild = true,
+        DotNetTest(solution, new DotNetTestSettings
+        {
+            Configuration = configuration,
+            Verbosity = DotNetVerbosity.Quiet,
+        });
     });
-});
+
+Task("Publish")
+    .IsDependentOn("Test")
+    .IsDependentOn("Clean")
+    .Does(() =>
+    {
+        DotNetPublish($"{srcDirectory}/Md2Html/Md2Html.csproj", new DotNetPublishSettings
+        {
+            Configuration = "Release",
+            OutputDirectory = publishPath,
+        });
+
+        Zip(publishPath, $"{artefactsPath}/Md2Html.zip");
+    });
 
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
 //////////////////////////////////////////////////////////////////////
 
-RunTarget(target); 
+RunTarget(target);
