@@ -427,5 +427,5 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-.idea
+.idea/
 src/Md2Html/readme.html
