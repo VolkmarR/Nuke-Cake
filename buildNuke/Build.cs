@@ -29,7 +29,7 @@ class Build : NukeBuild
         .Executes(() =>
         {
             var srcDirectory = RootDirectory / "src";
-            srcDirectory.GlobDirectories(@"**\obj").DeleteDirectories();
+            srcDirectory.GlobDirectories("**/obj").DeleteDirectories();
             srcDirectory.GlobDirectories("**/bin").DeleteDirectories();
             PublishPath.CreateOrCleanDirectory();
             ArtefactsPath.CreateOrCleanDirectory();
