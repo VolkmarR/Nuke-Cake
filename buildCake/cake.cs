@@ -1,5 +1,6 @@
+var isLocalBuild = BuildSystem.IsLocalBuild;
 var target = Argument("target", "Compile");
-var configuration = Argument("configuration", "Release");
+var configuration = Argument("configuration", isLocalBuild ? "Debug" : "Release");
 
 var solution = "./NukeCakeTests.sln";
 var srcDirectory = "./src";
@@ -10,7 +11,7 @@ var artefactsPath = "./artefacts";
 // TASKS
 //////////////////////////////////////////////////////////////////////
 
-Task("Clean")
+var cleanTask = Task("Clean")
     .Does(() =>
     {
         CleanDirectories($"{srcDirectory}/**/obj");
@@ -19,41 +20,41 @@ Task("Clean")
         CleanDirectory(artefactsPath);
     });
 
-Task("Restore")
+var restoreTask = Task("Restore")
     .Does(() =>
     {
         DotNetRestore(solution, new DotNetRestoreSettings
         {
-            Verbosity = DotNetVerbosity.Quiet,
+            Verbosity = DotNetVerbosity.Minimal,
         });
     });
 
-Task("Compile")
-    .IsDependentOn("Restore")
+var compileTask = Task("Compile")
+    .IsDependentOn(restoreTask)
     .Does(() =>
     {
         DotNetBuild(solution, new DotNetBuildSettings
         {
             Configuration = configuration,
             NoRestore = true,
-            Verbosity = DotNetVerbosity.Quiet,
+            Verbosity = DotNetVerbosity.Minimal,
         });
     });
 
-Task("Test")
-    .IsDependentOn("Compile")
+var testTask = Task("Test")
+    .IsDependentOn(compileTask)
     .Does(() =>
     {
         DotNetTest(solution, new DotNetTestSettings
         {
             Configuration = configuration,
-            Verbosity = DotNetVerbosity.Quiet,
+            Verbosity = DotNetVerbosity.Minimal,
         });
     });
 
-Task("Publish")
-    .IsDependentOn("Test")
-    .IsDependentOn("Clean")
+var publishTask = Task("Publish")
+    .IsDependentOn(testTask)
+    .IsDependentOn(cleanTask)
     .Does(() =>
     {
         DotNetPublish($"{srcDirectory}/Md2Html/Md2Html.csproj", new DotNetPublishSettings
