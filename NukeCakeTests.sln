@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Md2Html", "src\Md2Html\Md2Html.csproj", "{62F2EEA9-B174-4A95-A506-DD5BB1EEB1C5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Md2Html.Tests", "src\Md2Html.Tests\Md2Html.Tests.csproj", "{D8D2EC78-977B-4944-884E-2F9BCFFB874C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{62F2EEA9-B174-4A95-A506-DD5BB1EEB1C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62F2EEA9-B174-4A95-A506-DD5BB1EEB1C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62F2EEA9-B174-4A95-A506-DD5BB1EEB1C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62F2EEA9-B174-4A95-A506-DD5BB1EEB1C5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D8D2EC78-977B-4944-884E-2F9BCFFB874C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D8D2EC78-977B-4944-884E-2F9BCFFB874C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D8D2EC78-977B-4944-884E-2F9BCFFB874C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D8D2EC78-977B-4944-884E-2F9BCFFB874C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
