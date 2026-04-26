@@ -33,34 +33,43 @@ public sealed class ConvertCommand : Command<ConvertSettings>
 
         if (!File.Exists(inputPath))
         {
-            AnsiConsole.MarkupLine($"[red]Error:[/] File not found: {inputPath}");
+            AnsiConsole.MarkupLineInterpolated($"[red]Error:[/] File not found: {inputPath}");
             return 1;
         }
 
         var outputPath = settings.Output
             ?? Path.ChangeExtension(inputPath, ".html");
 
-        AnsiConsole.Status()
-            .Start("Converting...", ctx =>
-            {
-                ctx.Spinner(Spinner.Known.Dots);
-                var converter = new MarkdownConverter();
-
-                if (settings.FullDocument)
+        try
+        {
+            AnsiConsole.Status()
+                .Start("Converting...", ctx =>
                 {
-                    var markdown = File.ReadAllText(inputPath);
-                    var body = converter.Convert(markdown);
-                    var title = Path.GetFileNameWithoutExtension(inputPath);
-                    var html = HtmlDocument.Wrap(title, body);
-                    File.WriteAllText(outputPath, html);
-                }
-                else
-                {
-                    converter.ConvertFile(inputPath, outputPath);
-                }
-            });
+                    ctx.Spinner(Spinner.Known.Dots);
+                    var converter = new MarkdownConverter();
 
-        AnsiConsole.MarkupLine($"[green]Done![/] Output written to: {outputPath}");
-        return 0;
+                    if (settings.FullDocument)
+                    {
+                        var markdown = File.ReadAllText(inputPath);
+                        var body = converter.Convert(markdown);
+                        var title = Path.GetFileNameWithoutExtension(inputPath);
+                        var html = HtmlDocument.Wrap(title, body);
+                        File.WriteAllText(outputPath, html);
+                    }
+                    else
+                    {
+                        converter.ConvertFile(inputPath, outputPath);
+                    }
+                });
+
+            AnsiConsole.MarkupLineInterpolated($"[green]Done![/] Output written to: {outputPath}");
+            return 0;
+        }
+        catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+        {
+            AnsiConsole.MarkupLineInterpolated($"[red]Error:[/] Failed to convert file. {ex.Message}");
+            Environment.Exit(1);
+            return 1;
+        }
     }
 }

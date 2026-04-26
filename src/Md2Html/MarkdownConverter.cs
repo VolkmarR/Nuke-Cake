@@ -45,8 +45,23 @@ public class MarkdownConverter
         ArgumentNullException.ThrowIfNull(inputPath);
         ArgumentNullException.ThrowIfNull(outputPath);
 
+        inputPath = Path.GetFullPath(inputPath);
+        outputPath = Path.GetFullPath(outputPath);
+
+        if (string.Equals(inputPath, outputPath, StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("Input and output paths cannot be identical.");
+        }
+
         var markdown = File.ReadAllText(inputPath);
         var html = Convert(markdown);
+
+        var outDir = Path.GetDirectoryName(outputPath);
+        if (!string.IsNullOrEmpty(outDir))
+        {
+            Directory.CreateDirectory(outDir);
+        }
+
         File.WriteAllText(outputPath, html);
     }
 

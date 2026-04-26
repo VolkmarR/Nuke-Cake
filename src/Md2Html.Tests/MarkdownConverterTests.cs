@@ -42,7 +42,7 @@ public class MarkdownConverterTests
     // ── Paragraphs ────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Convert_PlainText_WrapedInParagraph()
+    public void Convert_PlainText_WrappedInParagraph()
     {
         var result = _sut.Convert("Hello World");
         Assert.Contains("<p>Hello World</p>", result);
